@@ -11,6 +11,23 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get('/debug', async (req, res) => {
+  const url = `${BASE}/snapshot/stocks/GLD?apiKey=${API_KEY}`;
+  try {
+    const r = await fetch(url);
+    const text = await r.text();
+    res.json({
+      status: r.status,
+      headers: Object.fromEntries(r.headers.entries()),
+      body_preview: text.substring(0, 500),
+      api_key_present: !!API_KEY,
+      url_called: url
+    });
+  } catch(e) {
+    res.json({ error: e.message });
+  }
+});
+
 app.get('/options/:ticker', async (req, res) => {
   const { ticker } = req.params;
   const { expiration_date, strike_price, contract_type } = req.query;
