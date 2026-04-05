@@ -40,8 +40,9 @@ app.get('/options/:ticker', async (req, res) => {
 // Option chain (all strikes for a ticker/expiry)
 app.get('/chain/:ticker', async (req, res) => {
   const { ticker } = req.params;
-  const { expiration_date, contract_type } = req.query;
-  const url = `https://api.massive.com/v3/snapshot/options/${ticker}?expiration_date=${expiration_date}&contract_type=${contract_type}&apiKey=${API_KEY}`;
+  const { expiration_date, contract_type, cursor } = req.query;
+  let url = `https://api.massive.com/v3/snapshot/options/${ticker}?expiration_date=${expiration_date}&contract_type=${contract_type}&apiKey=${API_KEY}`;
+  if(cursor) url += `&cursor=${cursor}`;
   try {
     const r = await fetch(url);
     const data = await r.json();
